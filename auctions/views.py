@@ -4,13 +4,42 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
+from django.contrib import messages
 
-from .models import User
+from .models import *
 from . import util
+
+FASHION = "FAS"
+TOYS = "TOY"
+ELECTRONICS = "ELE"
+HOME = "HOM"
+SPORTING_GOODS = "SPO"
+TOOLS_AND_PARTS = "TAP"
+BOOKS = "BKS"
+PET_SUPPLIES = "PET"
+HEALTH_AND_BEAUTY = "HLT"
+MISCELLANEOUS = "MSC"
+    
+CATEGORY_CHOICES = [
+    (FASHION, "Fashion"),
+    (TOYS, "Toys"),
+    (ELECTRONICS, "Electronics"),
+    (HOME, "Home"),
+    (SPORTING_GOODS, "Sporting Goods"),
+    (TOOLS_AND_PARTS, "Tools and Parts"),
+    (BOOKS, "Books"),
+    (PET_SUPPLIES, "Pet Supplies"),
+    (HEALTH_AND_BEAUTY, "Health and Beauty"),
+    (MISCELLANEOUS, "Miscellaneous"),
+]
+
+
 class NewListingForm(forms.Form):
-    list_name = forms.CharField(label="Listing Name")
+    list_name = forms.CharField(label="Listing Name", max_length=64)
     list_price = forms.DecimalField(max_digits=8, decimal_places=2, label="Starting Price")
-    list_desc = forms.CharField(widget=forms.Textarea, label="Listing Description")
+    list_image_url = forms.CharField(label="Image URL (optional)", max_length=2048, required=False)
+    list_category = forms.ChoiceField(choices = CATEGORY_CHOICES)
+    list_desc = forms.CharField(widget=forms.Textarea, label="Listing Description", max_length=1000)
 
 def index(request):
     return render(request, "auctions/index.html")
@@ -80,10 +109,14 @@ def listing_created(request):
         list_name = form.cleaned_data["list_name"]
         list_price = form.cleaned_data["list_price"]
         list_desc = form.cleaned_data["list_desc"]
-        util.create_listing(list_name, list_price, list_desc)
-        return HttpResponseRedirect(reverse("auctions:index"))
+        list_image_url = form.cleaned_data["list_image_url"]
+        list_category = form.cleaned_data["list_category"]
+        current_user = request.user
+        # util.create_listing(list_name, list_price, list_desc)
+        l = Listing(listing_name = list_name, listing_price=list_price, listing_desc=list_desc, 
+                    image_url=list_image_url, category=list_category, user=current_user)
+        l.save()
+        messages.success(request, "Your listing has been created!")
+        return HttpResponseRedirect(reverse("index"))
     else:
-        # this may work instead!!
-        # p = Person(name=name, phone_number=number, date_subscribed=datetime.now(), messages_received=0)
-        # p.save()
         return None
