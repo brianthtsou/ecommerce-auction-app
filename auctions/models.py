@@ -37,6 +37,10 @@ class Listing(models.Model):
     category = models.CharField(max_length=3, choices=CATEGORY_CHOICES, default=MISCELLANEOUS)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        new_line = '\n'
+        return f"{self.listing_name}{new_line} ${self.listing_price}{new_line} {self.listing_desc}{new_line} {self.image_url}"
+
 class Bid(models.Model):
     bid_price = models.DecimalField(max_digits=8, decimal_places=2)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

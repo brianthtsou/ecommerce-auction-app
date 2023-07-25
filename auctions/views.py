@@ -42,7 +42,9 @@ class NewListingForm(forms.Form):
     list_desc = forms.CharField(widget=forms.Textarea, label="Listing Description", max_length=1000)
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        "listings" : Listing.objects.all()
+    })
 
 
 def login_view(request):
