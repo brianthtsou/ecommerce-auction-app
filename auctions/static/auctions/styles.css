@@ -6,3 +6,12 @@ body {
     max-width: 15%;
     max-height: 15%;
 }
+
+.active_listing_link:hover, .active_listing_link:visited, .active_listing_link:link, .active_listing_link:active {
+    text-decoration: none;
+    color: black;
+}
+
+.active_listing_box {
+    color: black;
+}

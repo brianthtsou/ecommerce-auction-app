@@ -36,10 +36,13 @@ CATEGORY_CHOICES = [
 
 class NewListingForm(forms.Form):
     list_name = forms.CharField(label="Listing Name", max_length=64)
-    list_price = forms.DecimalField(max_digits=8, decimal_places=2, label="Starting Price")
+    list_price = forms.DecimalField(max_digits=8, decimal_places=2, label="Current Price")
     list_image_url = forms.CharField(label="Image URL (optional)", max_length=2048, required=False)
     list_category = forms.ChoiceField(choices = CATEGORY_CHOICES)
     list_desc = forms.CharField(widget=forms.Textarea, label="Listing Description", max_length=1000)
+
+class BidForm(forms.Form):
+    bid_price = forms.DecimalField(max_digits=8, decimal_places=2, label="Bid Price")
 
 def index(request):
     return render(request, "auctions/index.html", {
@@ -122,3 +125,21 @@ def listing_created(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return None
+
+def show_listing(request, id):
+    l = Listing.objects.get(pk=id)
+
+    name = l.listing_name
+    price = l.listing_price
+    desc = l.listing_desc
+    image_url = l.image_url
+    return render(request, "auctions/listing.html", {
+        "listing_name" : name,
+        "listing_price" : price,
+        "listing_desc" : desc,
+        "image_url" : image_url,
+        "bid_form" : BidForm()
+    })
+
+def watchlist(request):
+    return None

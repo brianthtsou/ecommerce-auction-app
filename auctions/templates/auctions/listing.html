@@ -1,0 +1,26 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<div class="container">
+    <h1>{{listing_name}}</h1>
+    Current Price: ${{listing_price}}
+    <br><br>
+    Description: <br> <br>
+    {{listing_desc}}
+
+    {% if image_url %}
+        <br>
+        <img class="active_list_img" src="{{image_url}}">
+        <br>
+    {% endif %}
+</div>
+<br>
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        {{ bid_form }}
+        <input type="submit">
+    </form>
+</div>
+{% endblock %}
