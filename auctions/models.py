@@ -53,3 +53,8 @@ class Comment(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
     text = models.CharField(max_length=300)
 
+class Watchlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+
+

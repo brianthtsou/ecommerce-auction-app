@@ -22,5 +22,14 @@
         {{ bid_form }}
         <input type="submit">
     </form>
+    {% if on_watchlist %}
+    <a href="{% url 'watchlist' %}">
+        <button type="button" class="btn btn-primary">Remove from Watchlist</button>
+    </a>
+    {% else %}
+    <a href="{% url 'watchlist' %}">
+        <button type="button" class="btn btn-primary">Add to Watchlist</button>
+    </a>
+    {% endif %}
 </div>
 {% endblock %}

@@ -133,13 +133,30 @@ def show_listing(request, id):
     price = l.listing_price
     desc = l.listing_desc
     image_url = l.image_url
+    list_id = l.id
+    
+    # if referring to a foreign key, can use the fieldname plus '_id' to refer to it
+    w = Watchlist.objects.filter(user_id=id, listing_id=list_id)
+
+    if w:
+        on_watchlist = True
+    else:
+        on_watchlist = False
+
     return render(request, "auctions/listing.html", {
         "listing_name" : name,
         "listing_price" : price,
         "listing_desc" : desc,
         "image_url" : image_url,
-        "bid_form" : BidForm()
+        "bid_form" : BidForm(),
+        "on_watchlist" : on_watchlist
     })
 
 def watchlist(request):
+    return None
+
+def remove_from_watchlist(request):
+    return None
+
+def add_to_watchlist(request):
     return None
