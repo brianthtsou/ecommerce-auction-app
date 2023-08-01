@@ -40,8 +40,10 @@ class Listing(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        new_line = '\n'
-        return f"{self.listing_name}{new_line} ${self.listing_price}{new_line} {self.listing_desc}{new_line} {self.image_url}"
+        return f"{self.listing_name} : {self.id}"
+    
+    def getID(self):
+        return self.id
 
 class Bid(models.Model):
     bid_price = models.DecimalField(max_digits=8, decimal_places=2)

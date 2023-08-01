@@ -22,7 +22,7 @@
             <input type="submit">
         </form>
         {% if on_watchlist %}
-        <a href="{% url 'remove_from_watchlist' %}">
+        <a href="{% url 'remove_from_watchlist' id=list_id %}">
             <button type="button" class="btn btn-primary">Remove from Watchlist</button>
         </a>
         {% else %}

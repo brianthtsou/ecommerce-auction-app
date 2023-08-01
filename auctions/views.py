@@ -156,20 +156,41 @@ def show_listing(request, id):
     })
 
 def watchlist(request):
-    return None
+    current_user = request.user
+    listings_on_watchlist = Watchlist.objects.filter(user=current_user)
+    listings = []
+    for listing in listings_on_watchlist:
+        l = listing.listing #this gets an entire Listing object from the watchlist
+        wlist_item = Listing.objects.get(pk=l.getID()) #call getID() to get the id from the listing object
+        listings.append(wlist_item)
 
-def remove_from_watchlist(request):
-    return None
+    return render(request, "auctions/watchlist.html", {
+        "listings" : listings
+    })
+
+def remove_from_watchlist(request, id):
+    current_user = request.user
+    l = Listing.objects.get(pk=id)
+    
+    on_w = Watchlist.objects.filter(user=current_user, listing=l)
+    if on_w:
+        Watchlist.objects.filter(user=current_user, listing=l).delete()
+
+
+    list_id = l.id
+
+    return show_listing(request, id=list_id)
+    
 
 def add_to_watchlist(request, id):
     current_user = request.user
     l = Listing.objects.get(pk=id)
- 
+    
+    on_w = Watchlist.objects.filter(user=current_user, listing=l)
+    if not on_w:
+        w = Watchlist(user=current_user, listing=l)
+        w.save()
 
-    w = Watchlist(user=current_user, listing=l)
-    w.save()
-
-    on_watchlist = True
 
     list_id = l.id
 
