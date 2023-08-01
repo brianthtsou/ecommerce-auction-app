@@ -134,12 +134,14 @@ def show_listing(request, id):
     desc = l.listing_desc
     image_url = l.image_url
     list_id = l.id
+    current_user = request.user
     
     # if referring to a foreign key, can use the fieldname plus '_id' to refer to it
-    w = Watchlist.objects.filter(user_id=id, listing_id=list_id)
+    w = Watchlist.objects.filter(user=current_user, listing=l)
 
     if w:
         on_watchlist = True
+        messages.success(request, "Currently watchlisted!")
     else:
         on_watchlist = False
 
@@ -149,7 +151,8 @@ def show_listing(request, id):
         "listing_desc" : desc,
         "image_url" : image_url,
         "bid_form" : BidForm(),
-        "on_watchlist" : on_watchlist
+        "on_watchlist" : on_watchlist,
+        "list_id" : list_id,
     })
 
 def watchlist(request):
@@ -158,5 +161,21 @@ def watchlist(request):
 def remove_from_watchlist(request):
     return None
 
-def add_to_watchlist(request):
-    return None
+def add_to_watchlist(request, id):
+    current_user = request.user
+    l = Listing.objects.get(pk=id)
+ 
+
+    w = Watchlist(user=current_user, listing=l)
+    w.save()
+
+    on_watchlist = True
+
+    list_id = l.id
+
+    return show_listing(request, id=list_id)
+
+
+
+    
+    

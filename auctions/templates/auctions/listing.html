@@ -1,35 +1,34 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    <div class="container">
+        <h1>{{listing_name}}</h1>
+        Current Price: ${{listing_price}}
+        <br><br>
+        Description: <br> <br>
+        {{listing_desc}}
 
-<div class="container">
-    <h1>{{listing_name}}</h1>
-    Current Price: ${{listing_price}}
-    <br><br>
-    Description: <br> <br>
-    {{listing_desc}}
-
-    {% if image_url %}
-        <br>
-        <img class="active_list_img" src="{{image_url}}">
-        <br>
-    {% endif %}
-</div>
-<br>
-<div class="container">
-    <form method="POST">
-        {% csrf_token %}
-        {{ bid_form }}
-        <input type="submit">
-    </form>
-    {% if on_watchlist %}
-    <a href="{% url 'watchlist' %}">
-        <button type="button" class="btn btn-primary">Remove from Watchlist</button>
-    </a>
-    {% else %}
-    <a href="{% url 'watchlist' %}">
-        <button type="button" class="btn btn-primary">Add to Watchlist</button>
-    </a>
-    {% endif %}
-</div>
+        {% if image_url %}
+            <br>
+            <img class="active_list_img" src="{{image_url}}">
+            <br>
+        {% endif %}
+    </div>
+    <br>
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            {{ bid_form }}
+            <input type="submit">
+        </form>
+        {% if on_watchlist %}
+        <a href="{% url 'remove_from_watchlist' %}">
+            <button type="button" class="btn btn-primary">Remove from Watchlist</button>
+        </a>
+        {% else %}
+        <a href="{% url 'add_to_watchlist' id=list_id %}">
+            <button type="button" class="btn btn-primary">Add to Watchlist</button>
+        </a>
+        {% endif %}
+    </div>
 {% endblock %}
