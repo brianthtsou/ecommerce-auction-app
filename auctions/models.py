@@ -5,7 +5,8 @@ from django.db import models
 #TODO: add Watchlist class, fkey = user, fkey = listing
 
 class User(AbstractUser):
-    pass
+    def getID(self):
+        return self.id
 
 class Listing(models.Model):
     FASHION = "FAS"
@@ -44,6 +45,15 @@ class Listing(models.Model):
     
     def getID(self):
         return self.id
+    
+    def get_info(self):
+        d = {}
+        d["name"] = self.listing_name
+        d["price"] = self.listing_price
+        d["desc"] = self.listing_desc
+        d["image_url"] = self.image_url
+        d["list_id"] = self.id
+        return d
 
 class Bid(models.Model):
     bid_price = models.DecimalField(max_digits=8, decimal_places=2)

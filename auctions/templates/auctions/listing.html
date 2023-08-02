@@ -16,11 +16,15 @@
     </div>
     <br>
     <div class="container">
-        <form method="POST">
+    {% if not same_user %}
+        <form action="{% url 'bid_on_listing' id=list_id %}" method="POST">
             {% csrf_token %}
             {{ bid_form }}
             <input type="submit">
         </form>
+    {% else %}
+        <button type="button" class="btn btn-primary">End Auction</button>
+    {% endif %}
         {% if on_watchlist %}
         <a href="{% url 'remove_from_watchlist' id=list_id %}">
             <button type="button" class="btn btn-primary">Remove from Watchlist</button>

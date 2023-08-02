@@ -135,7 +135,13 @@ def show_listing(request, id):
     image_url = l.image_url
     list_id = l.id
     current_user = request.user
-    
+    current_user_id = current_user.getID()
+
+    if l.user.getID() == current_user_id:
+        same_user = True
+    else:
+        same_user = False
+
     # if referring to a foreign key, can use the fieldname plus '_id' to refer to it
     w = Watchlist.objects.filter(user=current_user, listing=l)
 
@@ -153,6 +159,7 @@ def show_listing(request, id):
         "bid_form" : BidForm(),
         "on_watchlist" : on_watchlist,
         "list_id" : list_id,
+        "same_user" : same_user
     })
 
 def watchlist(request):
@@ -196,7 +203,52 @@ def add_to_watchlist(request, id):
 
     return show_listing(request, id=list_id)
 
+def bid_on_listing(request, id):
+    l = Listing.objects.get(pk=id)
+    current_user = request.user
+    
+    if request.method == "POST":
+        form = BidForm(request.POST)
+    
+    if form.is_valid():
+        bid_price = form.cleaned_data["bid_price"]
+    
+    if bid_price > l.listing_price:
+        b = Bid(bid_price=bid_price, user=current_user, listing=l)
+        b.save()
+        l.listing_price = bid_price
+        l.save()
+        messages.success(request, "Bid successful!")
+    else:
+        messages.success(request, "Bid unsuccessful, please input an appropriate price.")
+    
+    w = Watchlist.objects.filter(user=current_user, listing=l)
 
+    if w:
+        on_watchlist = True
+        messages.success(request, "Currently watchlisted!")
+    else:
+        on_watchlist = False
+
+    d = l.get_info()
+
+    current_user_id = current_user.getID()
+
+    if l.user.getID() == current_user_id:
+        same_user = True
+    else:
+        same_user = False
+    
+    return render(request, "auctions/listing.html", {
+        "listing_name" : d['name'],
+        "listing_price" : d['price'],
+        "listing_desc" : d['desc'],
+        "image_url" : d['image_url'],
+        "bid_form" : BidForm(),
+        "on_watchlist" : on_watchlist,
+        "list_id" : d['list_id'],
+        "same_user" : same_user
+    })
 
     
     
