@@ -251,4 +251,5 @@ def bid_on_listing(request, id):
     })
 
     
-    
+def categories_view(request):
+    return None
