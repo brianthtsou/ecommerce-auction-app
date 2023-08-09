@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from .models import *
 from . import util
@@ -101,6 +102,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+@login_required
 def create_new_listing(request):
     return render(request, "auctions/new_listing.html", {
         "listing_form" : NewListingForm()
@@ -126,6 +128,7 @@ def listing_created(request):
     else:
         return None
 
+@login_required
 def show_listing(request, id):
     l = Listing.objects.get(pk=id)
 
@@ -136,6 +139,7 @@ def show_listing(request, id):
     list_id = l.id
     current_user = request.user
     current_user_id = current_user.getID()
+    category = dict(CATEGORY_CHOICES)[l.category]
 
     if l.user.getID() == current_user_id:
         same_user = True
@@ -159,9 +163,11 @@ def show_listing(request, id):
         "bid_form" : BidForm(),
         "on_watchlist" : on_watchlist,
         "list_id" : list_id,
-        "same_user" : same_user
+        "same_user" : same_user,
+        "category" : category
     })
 
+@login_required
 def watchlist(request):
     current_user = request.user
     listings_on_watchlist = Watchlist.objects.filter(user=current_user)
@@ -252,4 +258,20 @@ def bid_on_listing(request, id):
 
     
 def categories_view(request):
-    return None
+    # get second tuple value in category list of tuples
+    
+    categories = dict(CATEGORY_CHOICES)
+    
+    # categories = [obj[1] for obj in CATEGORY_CHOICES]
+    # cat_abbrev = [obj[0] for obj in CATEGORY_CHOICES] 
+    return render(request, "auctions/categories.html", {
+        "categories" : categories,
+    })
+
+def single_category_view(request, cat):
+    listings = Listing.objects.filter(category=cat)
+    category = dict(CATEGORY_CHOICES)[cat]
+    return render(request, "auctions/single_cat_listings.html", {
+        "category" : category,
+        "listings" : listings
+    })

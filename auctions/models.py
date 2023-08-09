@@ -54,6 +54,9 @@ class Listing(models.Model):
         d["image_url"] = self.image_url
         d["list_id"] = self.id
         return d
+    
+    # def get_category(self):
+    #     return dict(CATEGORY_CHOICES)[self.category]
 
 class Bid(models.Model):
     bid_price = models.DecimalField(max_digits=8, decimal_places=2)
