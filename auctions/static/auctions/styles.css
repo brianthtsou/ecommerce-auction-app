@@ -15,3 +15,7 @@ body {
 .active_listing_box {
     color: black;
 }
+
+#form-submit-btn {
+    margin-top: 15px;
+}

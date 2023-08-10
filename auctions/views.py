@@ -45,6 +45,9 @@ class NewListingForm(forms.Form):
 class BidForm(forms.Form):
     bid_price = forms.DecimalField(max_digits=8, decimal_places=2, label="Bid Price")
 
+class CommentForm(forms.Form):
+    text = forms.CharField(label="Comment", widget=forms.Textarea(attrs={'placeholder': 'Max: 300', 'class': 'form-control', "rows" : 10, "cols" : 20}))
+
 def index(request):
     return render(request, "auctions/index.html", {
         "listings" : Listing.objects.all()
@@ -164,7 +167,8 @@ def show_listing(request, id):
         "on_watchlist" : on_watchlist,
         "list_id" : list_id,
         "same_user" : same_user,
-        "category" : category
+        "category" : category,
+        "comment_form" : CommentForm()
     })
 
 @login_required
@@ -253,7 +257,8 @@ def bid_on_listing(request, id):
         "bid_form" : BidForm(),
         "on_watchlist" : on_watchlist,
         "list_id" : d['list_id'],
-        "same_user" : same_user
+        "same_user" : same_user,
+        "comment_form" : CommentForm()
     })
 
     
@@ -275,3 +280,21 @@ def single_category_view(request, cat):
         "category" : category,
         "listings" : listings
     })
+
+def add_comment(request, id):
+    list_id = id
+    l = Listing.objects.get(pk=id)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+    
+    if form.is_valid():
+        text = form.cleaned_data["text"]
+
+    current_user = request.user
+
+    c = Comment(text=text, user=current_user, listing=l)
+    c.save()
+
+    #TODO: might need to refactor this code so messages.success can be displayed upon adding a new message
+
+    return show_listing(request, list_id)
