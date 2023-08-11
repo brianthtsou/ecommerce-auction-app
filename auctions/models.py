@@ -7,6 +7,9 @@ from django.db import models
 class User(AbstractUser):
     def getID(self):
         return self.id
+    
+    def getUsername(self):
+        return self.username
 
 class Listing(models.Model):
     FASHION = "FAS"

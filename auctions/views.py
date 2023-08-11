@@ -46,7 +46,7 @@ class BidForm(forms.Form):
     bid_price = forms.DecimalField(max_digits=8, decimal_places=2, label="Bid Price")
 
 class CommentForm(forms.Form):
-    text = forms.CharField(label="Comment", widget=forms.Textarea(attrs={'placeholder': 'Max: 300', 'class': 'form-control', "rows" : 10, "cols" : 20}))
+    text = forms.CharField(label="Add a Comment", widget=forms.Textarea(attrs={'placeholder': 'Max: 300', 'class': 'form-control', "rows" : 10, "cols" : 20}))
 
 def index(request):
     return render(request, "auctions/index.html", {
@@ -152,6 +152,12 @@ def show_listing(request, id):
     # if referring to a foreign key, can use the fieldname plus '_id' to refer to it
     w = Watchlist.objects.filter(user=current_user, listing=l)
 
+    c = Comment.objects.filter(listing=l)
+    if c:
+        comments_exist = True
+    else:
+        comments_exist = False
+
     if w:
         on_watchlist = True
         messages.success(request, "Currently watchlisted!")
@@ -168,7 +174,9 @@ def show_listing(request, id):
         "list_id" : list_id,
         "same_user" : same_user,
         "category" : category,
-        "comment_form" : CommentForm()
+        "comment_form" : CommentForm(),
+        "comments_exist" : comments_exist,
+        "comments" : c
     })
 
 @login_required
