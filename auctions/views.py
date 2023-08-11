@@ -179,6 +179,11 @@ def show_listing(request, id):
         "comments" : c
     })
 
+def end_auction(request, id):
+    l = Listing.objects.get(pk=id)
+    l.listing_open = False
+    l.save()
+
 @login_required
 def watchlist(request):
     current_user = request.user

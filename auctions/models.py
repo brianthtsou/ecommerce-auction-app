@@ -41,8 +41,10 @@ class Listing(models.Model):
     listing_desc = models.CharField(max_length=1000, default="")
     image_url = models.CharField(max_length=2048, default="", blank=True)
     category = models.CharField(max_length=3, choices=CATEGORY_CHOICES, default=MISCELLANEOUS)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    listing_open = models.BooleanField(default=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
+    # winner = models.ForeignKey(User, related_name="winner", on_delete=models.SET_NULL, null=True)
+    
     def __str__(self):
         return f"{self.listing_name} : {self.id}"
     
