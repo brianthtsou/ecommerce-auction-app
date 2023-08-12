@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="container">
+        <h1>{{listing_name}} - CLOSED</h1>
+        Sold Price: ${{listing_price}}
+        <br><br>
+        <h3>Winner : {{ winner }}</h3>
+        Description: <br> <br>
+        {{listing_desc}}
+        <br><br>
+        Category: {{category}}
+
+        {% if image_url %}
+            <br>
+            <img class="active_list_img" src="{{image_url}}">
+            <br>
+        {% endif %}
+    </div>
+    <br>
+    
+    {% if comments_exist %}
+        <div class ="container">
+            <h3>Comments</h3>
+            {% for comment in comments %}
+                {{ comment.user }} : {{comment.text}} <br>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+{% endblock %}

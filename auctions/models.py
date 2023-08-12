@@ -43,7 +43,7 @@ class Listing(models.Model):
     category = models.CharField(max_length=3, choices=CATEGORY_CHOICES, default=MISCELLANEOUS)
     listing_open = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
-    # winner = models.ForeignKey(User, related_name="winner", on_delete=models.SET_NULL, null=True)
+    winner = models.ForeignKey(User, related_name="winner", on_delete=models.SET_NULL, null=True)
     
     def __str__(self):
         return f"{self.listing_name} : {self.id}"

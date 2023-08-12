@@ -24,8 +24,10 @@
             {{ bid_form }}
             <input type="submit">
         </form>
-    {% else %}
-        <button type="button" class="btn btn-primary">End Auction</button>
+    {% elif listing_open %}
+        <a href="{% url 'end_auction' id=list_id %}">
+            <button type="button" class="btn btn-primary">End Auction</button>
+        </a>
     {% endif %}
         {% if on_watchlist %}
         <a href="{% url 'remove_from_watchlist' id=list_id %}">

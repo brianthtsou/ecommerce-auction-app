@@ -4,6 +4,7 @@
     <h2>Active Listings</h2>
     <br>
     {% for listing in listings %}
+        {% if listing.listing_open %}
         <a href="/listing/{{listing.id}}" class="active_listing_link">
             <div class="active_listing_box">
                 <h3>{{ listing.listing_name }}</h3><br>
@@ -17,6 +18,7 @@
             </div>
         </a>
         <br>
+        {% endif %}
     {% empty %}
         <div>No active listings.</div>
     {% endfor %}

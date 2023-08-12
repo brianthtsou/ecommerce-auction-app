@@ -143,6 +143,7 @@ def show_listing(request, id):
     current_user = request.user
     current_user_id = current_user.getID()
     category = dict(CATEGORY_CHOICES)[l.category]
+    listing_open = l.listing_open
 
     if l.user.getID() == current_user_id:
         same_user = True
@@ -163,26 +164,47 @@ def show_listing(request, id):
         messages.success(request, "Currently watchlisted!")
     else:
         on_watchlist = False
+    if listing_open:
+        return render(request, "auctions/listing.html", {
+            "listing_name" : name,
+            "listing_price" : price,
+            "listing_desc" : desc,
+            "image_url" : image_url,
+            "bid_form" : BidForm(),
+            "on_watchlist" : on_watchlist,
+            "list_id" : list_id,
+            "same_user" : same_user,
+            "category" : category,
+            "comment_form" : CommentForm(),
+            "comments_exist" : comments_exist,
+            "comments" : c,
+            "listing_open" : listing_open
+        })
+    else:
+        winner = l.winner
 
-    return render(request, "auctions/listing.html", {
-        "listing_name" : name,
-        "listing_price" : price,
-        "listing_desc" : desc,
-        "image_url" : image_url,
-        "bid_form" : BidForm(),
-        "on_watchlist" : on_watchlist,
-        "list_id" : list_id,
-        "same_user" : same_user,
-        "category" : category,
-        "comment_form" : CommentForm(),
-        "comments_exist" : comments_exist,
-        "comments" : c
-    })
+        return render(request, "auctions/closed_listing.html", {
+            "listing_name" : name,
+            "listing_price" : price,
+            "listing_desc" : desc,
+            "image_url" : image_url,
+            "list_id" : list_id,
+            "same_user" : same_user,
+            "category" : category,
+            "comments_exist" : comments_exist,
+            "comments" : c,
+            "winner" : winner
+        })
 
 def end_auction(request, id):
     l = Listing.objects.get(pk=id)
+    list_id = l.getID()
+    winning_price = l.listing_price
+    b = Bid.objects.get(bid_price=winning_price, listing=l)
     l.listing_open = False
+    l.winner = b.user
     l.save()
+    return show_listing(request, list_id)
 
 @login_required
 def watchlist(request):
